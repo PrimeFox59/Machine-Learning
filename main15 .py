@@ -233,7 +233,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<div class="header">🧠 Galih Primananda\'s ML Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="header">🧠 Machine Learning Dashboard</div>', unsafe_allow_html=True)
 
 # Sidebar navigation
 with st.sidebar:
@@ -267,16 +267,17 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("---")
+    st.image("avatar.png", width=100)  # Gambar kecil dengan judul avatar.png
     st.markdown("### About Me")
-    st.image("avatar.png", width=100, caption="Galih Primananda")  # Gambar kecil dengan judul avatar.png
     st.markdown("""
     **Galih Primananda**  
     Engineering Enthusiast  
     """)
+
     
     # Professional Profile
     st.markdown("""
-    **Professional Profile:**
+    **Profile:**
     - Multidisciplinary Engineer (7+ years experience)
     - Specializations: 
       - Machining Process Optimization
@@ -329,9 +330,15 @@ with st.sidebar:
     # Social media icons with links
     st.markdown("""
     <div class="social-media">
-        <a href="https://www.linkedin.com/in/galihprime/" class="linkedin" title="LinkedIn">👔</a>
-        <a href="https://github.com/PrimeFox59" class="github" title="GitHub">🐙</a>
-        <a href="https://www.instagram.com/glh_prima/" class="instagram" title="Instagram">📷</a>
+        <a href="https://www.linkedin.com/in/galihprime/" class="linkedin" title="LinkedIn">
+            <img src="https://cdn-icons-png.flaticon.com/128/3536/3536505.png" alt="LinkedIn" width="32" height="32" style="vertical-align:middle;">
+        </a>
+        <a href="https://github.com/PrimeFox59" class="github" title="GitHub">
+            <img src="https://cdn-icons-png.flaticon.com/128/733/733553.png" alt="GitHub" width="32" height="32" style="vertical-align:middle;">
+        </a>
+        <a href="https://www.instagram.com/glh_prima/" class="instagram" title="Instagram">
+            <img src="https://cdn-icons-png.flaticon.com/128/3955/3955024.png" alt="Instagram" width="32" height="32" style="vertical-align:middle;">
+        </a>
     </div>
     """, unsafe_allow_html=True)
     

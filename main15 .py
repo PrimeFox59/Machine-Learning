@@ -233,7 +233,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<div class="header">🧠 Galih Primananda\'s ML Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="header">🧠 Machine Learning Dashboard</div>', unsafe_allow_html=True)
 
 # Sidebar navigation
 with st.sidebar:

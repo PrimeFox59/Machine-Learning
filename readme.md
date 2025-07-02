@@ -31,13 +31,16 @@ This application allows users to make predictions using two models:
 ```bash
 git clone https://github.com/PrimeFox59/streamlit-ml-dashboard.git
 cd streamlit-ml-dashboard
-2. Install Dependencies
+```
+### 2. Install Dependencies
 ```bash
 Copy
 Edit
 pip install -r requirements.txt
-3. Run the App
+```
+###3. Run the App
 ```bash
 Copy
 Edit
 streamlit run app.py
+```

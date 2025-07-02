@@ -38,7 +38,7 @@ Copy
 Edit
 pip install -r requirements.txt
 ```
-###3. Run the App
+### 3. Run the App
 ```bash
 Copy
 Edit

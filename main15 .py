@@ -233,7 +233,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<div class="header">🧠 Machine Learning Dashboard</div>', unsafe_allow_html=True)
+st.markdown('<div class="header">🧠 Galih Primananda\'s ML Dashboard</div>', unsafe_allow_html=True)
 
 # Sidebar navigation
 with st.sidebar:
@@ -268,10 +268,63 @@ with st.sidebar:
     
     st.markdown("---")
     st.markdown("### About Me")
+    st.image("avatar.png", width=100, caption="Galih Primananda")  # Gambar kecil dengan judul avatar.png
     st.markdown("""
     **Galih Primananda**  
-    Machine Learning Enthusiast  
+    Engineering Enthusiast  
     """)
+    
+    # Professional Profile
+    st.markdown("""
+    **Professional Profile:**
+    - Multidisciplinary Engineer (7+ years experience)
+    - Specializations: 
+      - Machining Process Optimization
+      - industrial / Office System Development
+      - Data Analysis & Machine Learning
+    - Key Achievements:
+      - 375% efficiency boost Document Automation
+      - Kaizen QCC 1st Place Winner (2024)
+      - Best Kaizen Idea (2024)
+      - Machine Learning implementation in manufacturing
+    - Technical Skills:
+      - Advanced: Python, VBA, CAD/CAM
+      - Manufacturing: FMEA, QCPC, GD&T
+      - Emerging: Linear Regression
+    <div class="currently-learning">
+      <strong>Currently learning:</strong><br>
+      <span class="currently-learning-arrow">&#8594;</span> Machine Learning (Deep Learning)<br>
+      <span class="currently-learning-arrow">&#8594;</span> Web Application Development
+    </div>
+    - Education:
+      - STIE Mahardhika (Operational Management)
+      - SMKN 8 Malang (Mechatronics)
+    """, unsafe_allow_html=True)
+
+    # Tambahkan CSS untuk highlight "Currently learning" dengan warna gelap agar teks terang terlihat jelas
+    st.markdown("""
+    <style>
+        .sidebar .sidebar-content .markdown-text-container {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .sidebar .sidebar-content .markdown-text-container strong {
+            color: #2a5298;
+        }
+        .currently-learning {
+            background: linear-gradient(90deg, #232946, #2a5298);
+            color: #fff !important;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin: 8px 0;
+            border-left: 3px solid #7db9e8;
+        }
+        .currently-learning-arrow {
+            color: #7db9e8;
+            font-weight: bold;
+        }
+    </style>
+    """, unsafe_allow_html=True)
     
     # Social media icons with links
     st.markdown("""
@@ -339,7 +392,7 @@ def iris_prediction():
             input_df = pd.DataFrame(data, index=[0])
         
         st.markdown("**Current Measurements:**")
-        st.dataframe(input_df.style.highlight_max(axis=0, color="#d4f1f9"))
+        st.dataframe(input_df.style.highlight_max(axis=0, color="#508cfa"))
     
     # Prediksi
     if st.button('Predict Species'):

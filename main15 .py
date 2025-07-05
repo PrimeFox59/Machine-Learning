@@ -3,8 +3,14 @@ import pandas as pd
 import pickle
 import time
 from PIL import Image
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from pathlib import Path
 
-# Konfigurasi halaman
+# ======================
+# PAGE CONFIGURATION
+# ======================
 st.set_page_config(
     page_title="Galih's ML Dashboard",
     page_icon="🧠",
@@ -12,7 +18,9 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS kustom untuk styling dengan nuansa biru dan animasi unik
+# ======================
+# CUSTOM CSS STYLING
+# ======================
 st.markdown("""
 <style>
     /* Style utama dengan gradien biru */
@@ -222,6 +230,46 @@ st.markdown("""
         padding: 8px 12px !important;
     }
     
+    /* Surface Roughness Specific Styles */
+    .input-section {
+        background-color: var(--card-bg);
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        margin-bottom: 30px;
+    }
+    
+    .surface-prediction-box {
+        padding: 30px;
+        background-color: #e8f5e9;
+        border-radius: 12px;
+        margin: 30px 0;
+        border-left: 6px solid #388e3c;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    .footer {
+        text-align: center;
+        color: #7f8c8d;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        font-size: 0.9rem;
+    }
+    
+    .parameter-value {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .data-flow-card {
+        background-color: white;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
     /* Responsive adjustments */
     @media (max-width: 768px) {
         .header {
@@ -229,13 +277,24 @@ st.markdown("""
             padding: 15px;
         }
     }
+    
+    :root {
+        --primary: #388e3c;
+        --secondary: #2c3e50;
+        --light-bg: #f8f9fa;
+        --card-bg: #ffffff;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# Header
+# ======================
+# HEADER
+# ======================
 st.markdown('<div class="header">🧠 Machine Learning Dashboard</div>', unsafe_allow_html=True)
 
-# Sidebar navigation
+# ======================
+# SIDEBAR NAVIGATION
+# ======================
 with st.sidebar:
     st.image("icon head.png", width=200)
     st.markdown("### Navigation")
@@ -243,9 +302,9 @@ with st.sidebar:
     # Dropdown untuk memilih model
     model_option = st.selectbox(
         "Select Prediction Model:",
-        ("Iris Species Classifier", "Heart Disease Predictor"),
+        ("Iris Species Classifier", "Heart Disease Predictor", "Surface Roughness (Ra) Prediction"),
         key="model_select",
-        help="Pilih model prediksi yang ingin digunakan"
+        help="Select prediction model to use"
     )
     
     st.markdown("---")
@@ -255,7 +314,7 @@ with st.sidebar:
         "Input Method:",
         ("Manual Input", "Upload CSV"),
         key="input_method",
-        help="Pilih metode input data"
+        help="Select input method"
     )
     # Ganti warna teks selectbox menjadi putih
     st.markdown("""
@@ -348,7 +407,11 @@ with st.sidebar:
     Always consult healthcare professionals for medical advice.*</small>
     """, unsafe_allow_html=True)
 
-# Fungsi untuk prediksi Iris
+# ======================
+# MODEL FUNCTIONS
+# ======================
+
+# Iris Prediction Function
 def iris_prediction():
     col1, col2 = st.columns([2, 1])
     
@@ -363,10 +426,10 @@ def iris_prediction():
     with col2:
         try:
             img = Image.open("iris.JPG")
-            st.image(img, use_container_width=True, caption="Iris Flower Species")  # Diubah ke use_container_width
+            st.image(img, use_container_width=True, caption="Iris Flower Species")
         except:
             st.image("https://archive.ics.uci.edu/static/public/53/iris.jpg", 
-                    use_container_width=True, caption="Iris Flower Species")  # Diubah ke use_container_width
+                    use_container_width=True, caption="Iris Flower Species")
     
     # Input data
     st.markdown("### Input Features")
@@ -401,7 +464,7 @@ def iris_prediction():
         st.markdown("**Current Measurements:**")
         st.dataframe(input_df.style.highlight_max(axis=0, color="#508cfa"))
     
-    # Prediksi
+    # Prediction
     if st.button('Predict Species'):
         with st.spinner('Analyzing flower measurements...'):
             time.sleep(2)
@@ -448,7 +511,7 @@ def iris_prediction():
             except Exception as e:
                 st.error(f"Error during prediction: {str(e)}")
 
-# Fungsi untuk prediksi Heart Disease
+# Heart Disease Prediction Function
 def heart_disease_prediction():
     col1, col2 = st.columns([2, 1])
     
@@ -468,10 +531,10 @@ def heart_disease_prediction():
     with col2:
         try:
             img = Image.open("heart-disease.jpg")
-            st.image(img, use_container_width=True, caption="Heart Health Indicators")  # Diubah ke use_container_width
+            st.image(img, use_container_width=True, caption="Heart Health Indicators")
         except:
             st.image("https://www.heart.org/-/media/Images/Health-Topics/Heart-Disease/HeartDiseaseContentImage.jpg", 
-                   use_container_width=True, caption="Heart Health Indicators")  # Diubah ke use_container_width
+                   use_container_width=True, caption="Heart Health Indicators")
     
     # Input data
     st.markdown("### Patient Information")
@@ -541,7 +604,7 @@ def heart_disease_prediction():
         st.markdown("**Current Patient Data:**")
         st.dataframe(input_df.style.apply(lambda x: ['background: #ffcccc' if x.name in ['cp', 'exang', 'ca'] else '' for i in x], axis=1))
     
-    # Prediksi
+    # Prediction
     if st.button('Assess Heart Disease Risk'):
         with st.spinner('Analyzing health indicators...'):
             time.sleep(3)
@@ -613,8 +676,294 @@ def heart_disease_prediction():
             except Exception as e:
                 st.error(f"Error during prediction: {str(e)}")
 
-# Jalankan aplikasi berdasarkan pilihan
+# Surface Roughness Prediction Function
+def surface_roughness_prediction():
+    # DATA PROCESSING FLOW DOCUMENTATION
+    # Data Flow section removed as requested
+
+    # APP HEADER
+    col1, col2 = st.columns([1, 3])
+    with col2:
+        st.markdown('<h1 class="header-text">Surface Roughness (Ra) Prediction</h1>', unsafe_allow_html=True)
+        st.markdown("""
+        Predict the surface roughness (Ra) of machined parts using our advanced Random Forest algorithm. 
+        Adjust the machining parameters below and click **Predict** to get instant results.
+        """)
+
+    # MODEL LOADING
+    @st.cache_resource
+    def load_model():
+        try:
+            with st.spinner('🔍 Loading prediction model...'):
+                with open('random_forest_model.pkl', 'rb') as f:
+                    model = pickle.load(f)
+            st.success('✅ Model loaded successfully!')
+            return model
+        except Exception as e:
+            st.error(f"❌ Error loading model: {str(e)}")
+            return None
+
+    model = load_model()
+
+
+    # INPUT SECTION
+    with st.container():
+        st.markdown('<div class="input-section">', unsafe_allow_html=True)
+        st.markdown("### 🛠️ Machining Parameters")
+
+        # Use sidebar selection for input method
+        input_method = st.session_state.get('input_method', 'Manual Input')
+
+        if input_method == "Upload CSV":
+            uploaded_file = st.file_uploader("Upload your machining parameters CSV file", type=["csv"])
+            if uploaded_file is not None:
+                try:
+                    input_df = pd.read_csv(uploaded_file)
+                    st.success("File uploaded successfully!")
+                    st.dataframe(input_df)
+                except Exception as e:
+                    st.error(f"Error reading CSV: {str(e)}")
+                    st.stop()
+            else:
+                st.info("Please upload a CSV file with columns: f, Fy, Fx, Replica, Fz, Tool_ID")
+                st.markdown('</div>', unsafe_allow_html=True)
+                st.stop()
+        else:
+            cols = st.columns(2)
+            with cols[0]:
+                Tool_ID = st.selectbox(
+                    '**Tool ID**', 
+                    ['21', '31', '41', '51', '61', '71'],
+                    help="Select the cutting tool identifier",
+                    index=0
+                )
+                f = st.number_input(
+                    '**Feed Rate (f) [mm/rev]**', 
+                    value=0.1, 
+                    min_value=0.01, 
+                    max_value=1.0, 
+                    step=0.01,
+                    format="%.2f",
+                    help="Feed rate in millimeters per revolution"
+                )
+            with cols[1]:
+                replica_map = {'Replica 1': 1, 'Replica 2': 2}
+                replica_display = st.selectbox(
+                    '**Replication**',
+                    list(replica_map.keys()),
+                    help="Experimental replication number",
+                    index=0
+                )
+                Replica = replica_map[replica_display]
+                st.markdown("### ⚡ Cutting Forces")
+                Fx = st.number_input(
+                    '**Fx (N)**', 
+                    value=0.0, 
+                    step=0.1,
+                    format="%.1f",
+                    help="Cutting force in X direction"
+                )
+                Fy = st.number_input(
+                    '**Fy (N)**', 
+                    value=0.0, 
+                    step=0.1,
+                    format="%.1f",
+                    help="Cutting force in Y direction"
+                )
+                Fz = st.number_input(
+                    '**Fz (N)**', 
+                    value=0.0, 
+                    step=0.1,
+                    format="%.1f",
+                    help="Cutting force in Z direction"
+                )
+            input_dict = {
+                'f': [f],
+                'Fy': [Fy],
+                'Fx': [Fx],
+                'Replica': [Replica],
+                'Fz': [Fz],
+                'Tool_ID': [Tool_ID]
+            }
+            feature_order = ['f', 'Fy', 'Fx', 'Replica', 'Fz', 'Tool_ID']
+            input_df = pd.DataFrame(input_dict)[feature_order]
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # PREDICTION BUTTON & RESULTS
+    if st.button('🔮 Predict Ra', use_container_width=True, type="primary"):
+        if model is None:
+            st.error("Model not loaded. Cannot make predictions.")
+        else:
+            try:
+                with st.spinner('🧠 Calculating prediction...'):
+                    prediction = model.predict(input_df)
+                    st.balloons()
+                # Display prediction and quality scale side by side
+                result_col, scale_col = st.columns([2, 2])
+                with result_col:
+                    st.markdown(f"""
+    <div class="surface-prediction-box" style="background-color: #23272f; color: #fff;">
+        <h2 style="color: #fff; font-size: 2.5rem; font-weight: 900; text-align:center; margin-bottom: 0.5em;">
+            📊 Prediction Result
+        </h2>
+        <p style="font-size: 3.2rem; font-weight: bold; color: #4caf50; text-align:center; margin-bottom: 0.2em;">
+            {prediction[0]:.4f} <span style='font-size:1.5rem;'>μm</span>
+        </p>
+        <div style="margin-top: 35px;">
+            <p style="font-weight: 600; font-size:1.2rem; border-bottom: 1px solid #444; padding-bottom: 8px; color: #fff;">
+                Parameters Used:
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 15px;">
+                <div>
+                    <p style="margin-bottom: 5px; color: #fff;"><b>🔧 Tool ID:</b></p>
+                    <p class="parameter-value" style="color: #fff;">{Tool_ID}</p>
+                </div>
+                <div>
+                    <p style="margin-bottom: 5px; color: #fff;"><b>🔄 Replica:</b></p>
+                    <p class="parameter-value" style="color: #fff;">{Replica}</p>
+                </div>
+                <div>
+                    <p style="margin-bottom: 5px; color: #fff;"><b>⚙️ Feed Rate:</b></p>
+                    <p class="parameter-value" style="color: #fff;">{f:.2f} mm/rev</p>
+                </div>
+                <div>
+                    <p style="margin-bottom: 5px; color: #fff;"><b>💪 Forces:</b></p>
+                    <p class="parameter-value" style="color: #fff;">Fx={Fx:.1f} N, Fy={Fy:.1f} N, Fz={Fz:.1f} N</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+                with scale_col:
+                    st.markdown("### 📏 Surface Quality Scale")
+                    fig, ax = plt.subplots(figsize=(6, 2))
+                    # Define quality ranges and colors (Standard removed)
+                    ranges = [0, 0.4, 1.6, 2.5]
+                    labels = ['Very Smooth', 'Rough', 'Very Rough']
+                    colors = ['#81c784', '#ffd54f', '#e57373']
+                    
+                    # Create the quality bar
+                    for i in range(len(ranges)-1):
+                        ax.barh(0, ranges[i+1]-ranges[i], left=ranges[i], 
+                               color=colors[i], height=0.5, edgecolor='white')
+                    # Add prediction indicator
+                    ax.axvline(prediction[0], color='#1976d2', linestyle='-', 
+                              linewidth=3, label=f'Predicted Ra: {prediction[0]:.4f} μm')
+                    # Customize the plot
+                    ax.set_xlim(0, 2.5)
+                    ax.set_yticks([])
+                    ax.set_xlabel('Surface Roughness (Ra) in micrometers (μm)', fontsize=12)
+                    ax.set_title('Surface Quality Classification', fontsize=14, pad=15)
+                    # Add quality labels
+                    for i in range(len(labels)):
+                        xpos = (ranges[i] + ranges[i+1]) / 2
+                        ax.text(xpos, 0, labels[i], ha='center', va='center', 
+                              fontsize=8, fontweight='bold', color='#2c3e50')
+                    ax.legend(loc='upper right', framealpha=1)
+                    plt.tight_layout()
+                    st.pyplot(fig)
+                # Quality interpretation
+                quality_text = ""
+                if prediction[0] < 0.4:
+                    quality_text = "Excellent surface finish (Very Smooth)"
+                elif 0.4 <= prediction[0] < 0.8:
+                    quality_text = "Good surface finish (Standard)"
+                elif 0.8 <= prediction[0] < 1.6:
+                    quality_text = "Moderate surface finish (Rough)"
+                else:
+                    quality_text = "Poor surface finish (Very Rough)"
+                st.info(f"**Quality Interpretation:** {quality_text}")
+            except Exception as e:
+                st.error(f"❌ Prediction failed: {str(e)}")
+
+    # INFORMATION SECTION
+    with st.expander("ℹ️ About this tool", expanded=False):
+        tab1, tab2, tab3 = st.tabs(["Guide", "Technical", "Interpretation"])
+        
+        with tab1:
+            st.markdown("""
+            ### How to Use This Tool
+            
+            1. **Select Tool ID** - Choose the appropriate cutting tool from the dropdown
+            2. **Set Replication** - Select the experimental replication number
+            3. **Enter Feed Rate** - Input the machining feed rate in mm/rev
+            4. **Input Cutting Forces** - Provide the measured forces in X, Y, and Z directions
+            5. **Click Predict** - Get instant surface roughness prediction
+            
+            The system will display:
+            - Predicted Ra value in micrometers (μm)
+            - Visual quality scale showing where your result falls
+            - Detailed parameter summary
+            """)
+        
+        with tab2:
+            st.markdown("""
+            ### Technical Specifications
+
+            **Data Source**
+            - This model was trained using the [CNC Turning Roughness, Forces, and Tool Wear dataset](https://www.kaggle.com/datasets/adorigueto/cnc-turning-roughness-forces-and-tool-wear) from Kaggle.
+            - The dataset contains detailed measurements from CNC turning experiments, including surface roughness (Ra), cutting forces (Fx, Fy, Fz), tool wear, and machining parameters.
+
+            **Model Architecture**
+            - Type: Random Forest Regressor
+            - Estimators: 200 trees
+            - Max Depth: 20 levels
+
+            **Input Features**
+            - Tool ID (categorical)
+            - Replication number
+            - Feed rate (f) in mm/rev
+            - Cutting forces (Fx, Fy, Fz) in Newtons
+
+            **Parameter Ranges Used in Training Dataset**
+            - **Init_diameter:** 94, 93.5, 92.5, 90.9, 90.4, 89.4 (mm)
+            - **Final_diameter:** 93.5, 92.5, 90.9, 90.4, 89.4, 87.8 (mm)
+            - **ap (depth of cut):** 0.25, 0.5, 0.8 (mm)
+            - **vc (cutting speed):** 310, 350, 390 (m/min)
+
+            **Performance Metrics**
+            - R² Score: 0.9515
+            - Mean Absolute Error: 0.0413 μm
+            - Cross-Validation Score: 0.94
+
+            **Training Data**
+            - 300+ machining experiments
+            - 6 different tool types
+            """)
+        
+        with tab3:
+            st.markdown("""
+            ### Surface Quality Interpretation
+            
+            | Ra Value (μm) | Classification | Typical Application |
+            |--------------|----------------|---------------------|
+            | < 0.4 | Very Smooth | Precision components, optical surfaces |
+            | 0.4 - 1.6 | Rough | General engineering components |
+            | > 1.6 | Very Rough | Rough castings, unfinished surfaces |
+            
+            **Factors Affecting Surface Finish:**
+            - Higher feed rates generally increase roughness
+            - Tool wear degrades surface quality over time
+            - Optimal cutting forces produce better finishes
+            - Tool geometry significantly impacts results
+            """)
+
+    # FOOTER
+    st.markdown("""
+    <div class="footer">
+        <p>Surface Roughness Prediction Tool v1.1</p>
+        <p>© 2025 by Galih Primananda | MAI1714</p>
+        <p>Powered by Random Forest</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# ======================
+# MAIN APP LOGIC
+# ======================
 if st.session_state.model_select == "Iris Species Classifier":
     iris_prediction()
 elif st.session_state.model_select == "Heart Disease Predictor":
     heart_disease_prediction()
+elif st.session_state.model_select == "Surface Roughness (Ra) Prediction":
+    surface_roughness_prediction()

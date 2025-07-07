@@ -127,7 +127,8 @@ st.markdown("""
     .prediction-box {
         padding: 25px;
         border-radius: 15px;
-        background: linear-gradient(to right, #f8fbff, #f0f8ff);
+        background-color: #1c1f26;
+        color: #fff;
         margin-top: 20px;
         border-left: 6px solid #2a5298;
         transition: all 0.5s ease-out;
@@ -241,7 +242,7 @@ st.markdown("""
     
     .surface-prediction-box {
         padding: 30px;
-        background-color: #e8f5e9;
+        background-color: ##045F5F;
         border-radius: 12px;
         margin: 30px 0;
         border-left: 6px solid #388e3c;
@@ -492,13 +493,14 @@ def iris_prediction():
                 # Tampilkan hasil
                 st.markdown("### Prediction Result")
                 st.markdown(f"""
-                <div class="prediction-box" style="border-left-color: {color}">
+                <div class="prediction-box" style="background-color: #1c1f26; border-left-color: {color}; color: white;">
                     <h2 style="color:{color}; text-align:center;">
                         {emoji} {species} {emoji}
                     </h2>
                     <p style="text-align:center;">The model predicts this is an <strong>{species}</strong> iris flower.</p>
                 </div>
                 """, unsafe_allow_html=True)
+
                 
                 # Visualisasi fitur penting
                 st.markdown("**Feature Importance:**")

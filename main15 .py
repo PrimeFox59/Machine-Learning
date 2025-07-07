@@ -847,11 +847,11 @@ def surface_roughness_prediction():
                     
                     # Create the quality bar
                     for i in range(len(ranges)-1):
-                        ax.barh(0, ranges[i+1]-ranges[i], left=ranges[i], 
-                               color=colors[i], height=0.5, edgecolor='white')
+                    ax.barh(0, ranges[i+1]-ranges[i], left=ranges[i], 
+                    color=colors[i], height=0.5, edgecolor='white')
                     # Add prediction indicator
                     ax.axvline(prediction[0], color='#1976d2', linestyle='-', 
-                              linewidth=3, label=f'Predicted Ra: {prediction[0]:.4f} μm')
+                    linewidth=3, label=f'Predicted Ra: {prediction[0]:.4f} μm')
                     # Customize the plot
                     ax.set_xlim(0, 2.5)
                     ax.set_yticks([])
@@ -859,23 +859,21 @@ def surface_roughness_prediction():
                     ax.set_title('Surface Quality Classification', fontsize=14, pad=15)
                     # Add quality labels
                     for i in range(len(labels)):
-                        xpos = (ranges[i] + ranges[i+1]) / 2
-                        ax.text(xpos, 0, labels[i], ha='center', va='center', 
-                              fontsize=8, fontweight='bold', color='#2c3e50')
+                    xpos = (ranges[i] + ranges[i+1]) / 2
+                    ax.text(xpos, 0, labels[i], ha='center', va='center', 
+                    fontsize=8, fontweight='bold', color='#2c3e50')
                     ax.legend(loc='upper right', framealpha=1)
                     plt.tight_layout()
                     st.pyplot(fig)
-                # Quality interpretation
-                quality_text = ""
-                if prediction[0] < 0.4:
+                    # Quality interpretation
+                    quality_text = ""
+                    if prediction[0] < 0.4:
                     quality_text = "Excellent surface finish (Very Smooth)"
-                elif 0.4 <= prediction[0] < 0.8:
-                    quality_text = "Good surface finish (Standard)"
-                elif 0.8 <= prediction[0] < 1.6:
+                    elif 0.4 <= prediction[0] < 1.6:
                     quality_text = "Moderate surface finish (Rough)"
-                else:
+                    else:
                     quality_text = "Poor surface finish (Very Rough)"
-                st.info(f"**Quality Interpretation:** {quality_text}")
+                    st.info(f"**Quality Interpretation:** {quality_text}")
             except Exception as e:
                 st.error(f"❌ Prediction failed: {str(e)}")
 
